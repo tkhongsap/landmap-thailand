@@ -28,7 +28,10 @@ RUN bun install
 
 # Copy Python requirements and install
 COPY requirements.txt ./
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Disable any inherited proxy settings to avoid build failures when
+# external proxies are not reachable during `pip install`.
+RUN export http_proxy="" https_proxy="" HTTP_PROXY="" HTTPS_PROXY="" \
+    && pip3 install --no-cache-dir -r requirements.txt
 # Don't need to run playwright install as we're using system chromium
 # RUN playwright install chromium
 
