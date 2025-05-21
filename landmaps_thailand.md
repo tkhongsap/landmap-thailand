@@ -99,5 +99,3 @@ After capturing the screenshots, you can:
 1. Use the provided OCR extraction script to extract information from the screenshots
 2. Manually review the screenshots to verify the data
 3. Share the screenshots and extracted data as needed
-
-For any issues or questions, please let me know!
