@@ -1,5 +1,5 @@
 # Core dependencies
-playwright==1.40.0  # Browser automation
+# playwright==1.40.0  # Browser automation - installed separately for Alpine compatibility
 requests==2.31.0    # HTTP requests
 python-dotenv==1.0.0  # Environment variable management
 
