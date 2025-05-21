@@ -106,8 +106,16 @@ def capture_deed_screenshots(deed_numbers, province="กรุงเทพมห
         # Launch browser with appropriate settings
         browser_type = p.chromium
         
+        # Get the path to the Chromium executable - use system Chromium if available
+        chromium_path = os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH')
+        browser_options = {}
+        
+        if chromium_path:
+            print(f"Using system Chromium at: {chromium_path}")
+            browser_options['executable_path'] = chromium_path
+        
         # Configure browser context with Thai language preference
-        browser = browser_type.launch(headless=headless)
+        browser = browser_type.launch(headless=headless, **browser_options)
         context = browser.new_context(
             locale="th-TH",
             timezone_id="Asia/Bangkok",

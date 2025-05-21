@@ -1,5 +1,5 @@
 # Core dependencies
-playwright==1.40.0  # Browser automation
+playwright>=1.30.0  # Browser automation
 requests==2.31.0    # HTTP requests
 python-dotenv==1.0.0  # Environment variable management
 
@@ -12,4 +12,4 @@ Pillow==10.0.0  # Image processing library
 
 # Development tools
 pytest==7.4.0  # Testing framework
-pytest-playwright==0.4.0  # Playwright testing integration 
+pytest-playwright>=0.3.0  # Playwright testing integration 
