@@ -1,15 +1,15 @@
 # Core dependencies
-playwright==1.40.0  # Browser automation
-requests==2.31.0    # HTTP requests
-python-dotenv==1.0.0  # Environment variable management
+requests>=2.31.0    # HTTP requests
+python-dotenv>=1.0.0  # Environment variable management
 
 # CLI and utilities
-argparse==1.4.0  # Command-line argument parsing
-colorama==0.4.6  # Colored terminal output
+argparse>=1.4.0  # Command-line argument parsing
+colorama>=0.4.6  # Colored terminal output
 
 # Image processing (optional)
-Pillow==10.0.0  # Image processing library
+Pillow>=9.0.0  # Image processing library
 
 # Development tools
-pytest==7.4.0  # Testing framework
-pytest-playwright==0.4.0  # Playwright testing integration 
+pytest>=7.0.0  # Testing framework
+
+# Note: Playwright will be installed separately via playwright-python package 
