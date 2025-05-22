@@ -16,13 +16,15 @@ code_review:
       -e EVENT_NAME="$CI_PIPELINE_SOURCE"
       -e EVENT_NUMBER="$CI_MERGE_REQUEST_IID"
       -e EVENT_TITLE="$CI_COMMIT_TITLE"
+      -e REPOSITORY="$CI_PROJECT_NAME"
+      -e NAMESPACE="$CI_PROJECT_ROOT_NAMESPACE"
       -v $PWD:/app/
-      registryii.thaibevapp.com/otcsell/otctools/base-image/doctor:latest
+      harborregistryii.thaibevapp.com/baseimage/code-master:latest
       bash -c "python /doctor/code_review.py"
   except:
     - tags
-  only:
-    - dev
+  # only:
+  #   - main
   artifacts:
     paths:
       - code-review-scores/
@@ -31,40 +33,35 @@ code_review:
 
 upload_code_review:
   stage: code-analyze
-  image: registryii.thaibevapp.com/otcsell/otctools/base-image/doctor:latest
+  image: harborregistryii.thaibevapp.com/baseimage/code-master:latest
   variables:
     REVIEW_DEFAULT_BRANCH: master
   before_script:
     # Export environment variables
     - export REVIEW_REPOSITORY_URL=gitlabii.thaibevapp.com/gitlab-code-review/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}.git
-    - echo CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE
-    - echo CI_PROJECT_NAME=$CI_PROJECT_NAME
+
     # Git configuration
     - git config user.name "${GITLAB_USER_NAME}"
     - git config user.email "${GITLAB_USER_EMAIL}"
-    - git remote set-url origin "https://${GITLAB_USER_LOGIN}:${GITLAB_ACCESS_TOKEN_SCAN_CODE}@${REVIEW_REPOSITORY_URL#*@}"
+    - git remote set-url origin "https://${GITLAB_USER_LOGIN}:${GITLAB_ACCESS_TOKEN}@${REVIEW_REPOSITORY_URL#*@}"
     - git fetch origin $REVIEW_DEFAULT_BRANCH
     - git checkout $REVIEW_DEFAULT_BRANCH
-    # - git reset --hard origin/$REVIEW_DEFAULT_BRANCH
-    - git pull origin $REVIEW_DEFAULT_BRANCH
-
+    - git pull origin $REVIEW_DEFAULT_BRANCH --rebase
   script:
+    # Update repository
     - git add code-review-scores/
-    # - git status
-    - |
-      if ! git diff --cached --quiet; then
-        git commit -m "docs: add code review results for $CI_COMMIT_SHA"
-      else
-        echo "No changes to commit."
-      fi
+    - >
+      git commit -m "docs: add code review results for $CI_COMMIT_SHA"
 
+    # Ensure already-update
     - git pull origin $REVIEW_DEFAULT_BRANCH --rebase
 
+    # Update gitops
     - git push origin $REVIEW_DEFAULT_BRANCH
   needs:
     - code_review
   except:
     - tags
-  only:
-    - dev
+  # only:
+  #   - main
   allow_failure: true
