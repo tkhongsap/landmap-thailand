@@ -1,26 +1,29 @@
 # Build stage
-FROM oven/bun:1.1.29-alpine AS build
+FROM oven/bun:1.1.29 AS build
 
 WORKDIR /app
 
 # Install Python and required dependencies
-RUN apk add --no-cache python3 py3-pip chromium \
-    # Additional dependencies for Playwright on Alpine
-    && apk add --no-cache \
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    chromium \
     ffmpeg \
-    freetype \
-    harfbuzz \
+    libfreetype6 \
+    libharfbuzz0b \
     ca-certificates \
-    ttf-freefont \
-    nss \
+    fonts-freefont-ttf \
+    libnss3 \
     pciutils \
-    dbus-x11
+    dbus-x11 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables for Playwright to use installed Chromium
 ENV PYTHONUNBUFFERED=1 \
     PLAYWRIGHT_BROWSERS_PATH=0 \
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
-    PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy and install JavaScript dependencies
 COPY package*.json ./
