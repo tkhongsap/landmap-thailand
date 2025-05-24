@@ -31,7 +31,10 @@ RUN bun install
 COPY requirements.txt ./
 
 # Install Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Clear any proxy settings inherited from the build environment so pip can
+# reach PyPI even when external proxies are unavailable.
+RUN export http_proxy="" https_proxy="" HTTP_PROXY="" HTTPS_PROXY="" \
+    && pip3 install --no-cache-dir -r requirements.txt
 
 # No need to install Playwright browsers since we're using system Chromium
 # RUN PLAYWRIGHT_BROWSERS_PATH=/ms-playwright playwright install chromium
